@@ -1,0 +1,143 @@
+body{
+	margin: 0;
+	padding: 0;
+	background-repeat: no-repeat;
+}
+.drops {
+	height: 20vh;
+	background: url(drops.jpg);
+	animation: drops .4s ease-in infinite reverse;
+	background-repeat: no-repeat;
+
+}
+.plantHappy {
+     height: 37vh;
+	background: url(plant1.jpg);
+	background-repeat: no-repeat;
+}
+.plantSad {
+     height: 40vh;
+     margin-top: 100px;
+	background: url(plant2.jpg);
+	background-repeat: no-repeat;
+}
+
+
+.monkeyHappy {
+    height: 35vh;
+    background: url(mhappy.jpg);
+    background-repeat: no-repeat;
+    flex: 1;
+    /*animation: monkeyHappy 20s ease-out infinite;*/
+
+}
+.monkeySad {
+    height: 35vh;
+    background: url(msad.jpg);
+    background-repeat: no-repeat;
+
+}
+.banana {
+    height: 15vh;
+    background: url(banana.jpg);
+    background-repeat: no-repeat;
+    flex: 1;
+}
+
+
+.vertical1 {
+    border-left: 9px solid black;
+    height: 500px;
+    left: 10%;
+}
+.vertical2 {
+    border-left: 9px solid cadetblue;
+    height: 400px;
+    left: 10%;
+}
+.vertical3 {
+    border-left: 9px solid darkred;
+    height: 480px;
+    left: 10%;
+}
+
+.speed1 {
+    animation: speed1 linear 3s infinite;
+}
+.speed2 {
+    animation: speed2 linear 2.9s infinite;
+}
+.speed3 {
+    animation: speed3 linear 3s infinite;
+}
+.speed4 {
+    animation: speed4 linear 2.8s infinite;
+}
+/* button outline*/
+.btn:focus {
+    box-shadow: none;
+}
+
+.streak{
+    background-color: #F0BF4C;
+}
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.popup-inner {
+    background: #FFF;
+    padding: 50px;
+}
+.expBg{
+    height: 25vh;
+    width: 200px;
+    background: url(exp.jpg);
+    background-repeat: no-repeat;
+}
+
+@keyframes drops{
+	0%{
+		transform: translateY(0);
+	}
+	100%{
+		transform: translateY(-10px);
+	}
+}
+
+@keyframes monkeyHappy{
+    0%{
+        transform: translateY(0);
+    }
+    100%{
+        transform: translateY(+10px);
+    }
+}
+
+@keyframes speed1{
+    from{ transform: rotate(-360deg); }
+    to{ transform: rotate(360deg); }
+}
+@keyframes speed2{
+    from{ transform: rotate(-360deg); }
+    to{ transform: rotate(360deg); }
+}
+@keyframes speed3{
+    from{ transform: rotate(-360deg); }
+    to{ transform: rotate(360deg); }
+}
+@keyframes speed4{
+    from{ transform: rotate(-360deg); }
+    to{ transform: rotate(360deg); }
+}
+
+
+
