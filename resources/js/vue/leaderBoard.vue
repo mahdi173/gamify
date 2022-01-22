@@ -75,7 +75,7 @@ export default {
         getTopUsers(){
             axios.post('api/home/getTopUsers', {idUser:1})
                 .then(response => {
-                    console.log(response.data);
+                    //console.log(response.data);
                     this.usersNew= response.data;
                 })
                 .catch(error => {

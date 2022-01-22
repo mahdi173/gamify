@@ -47,7 +47,6 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
       { path: '/missions', name: 'Missions', component: Missions },
       { path: '/mission1', name: 'Mission1', component: Communication },
       { path: '/mission2', name: 'Mission2', component: Teamwork },
-  //    { path: '/leaderboard', name: 'LeaderBoard', component: LeaderBoard },
       { path: '/multi1', name: 'Multi1', component: Multi1 },
       { path: '/accuracy1', name: 'Accuracy1', component: Accuracy1 },
       { path: '/details1', name: 'Details1', component: Details1 },

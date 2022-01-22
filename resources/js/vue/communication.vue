@@ -6,8 +6,8 @@
             <div class="border">
                 <div class="question bg-white p-3 border-bottom">
                     <div class="d-flex flex-row justify-content-between align-items-center mcq">
-                    <h5 class="mt-1 ml-2">{{questions[0].contenuQst}}</h5>
-                        <h4 v-if="!timeStop"> <i class="bi bi-stopwatch"><sub > {{count}}</sub></i> </h4>
+                    <h5 class="mt-1 ml-2">{{qst}}</h5>
+                        <h4 v-if="!timeStop"> <i class="bi bi-stopwatch"><sub> {{count}}</sub></i> </h4>
                      </div>
                 </div>
                 <div class="question bg-white p-2 border-bottom">
@@ -65,8 +65,7 @@
     </div>
     </div>
 
-
-      <div v-if="expModal">
+     <div v-if="expModal">
           <div class="popup">
               <div class="modal-wrapper col-sm-3">
                   <div class="modal-dialog" role="document">
@@ -94,14 +93,14 @@ export default{
     data : function (){
      return {
        questions: [],
+         qst:'',
          bonus:[],
        page :0,
          count: 30,
          nbrCorect:0,
+         time:0,
          exp: false,
          timeStop: false,
-         eraser: false,
-         eraser2: false,
          expTotal: 1000,
          showModal:false,
          expModal:false,
@@ -112,26 +111,27 @@ export default{
     getQsts (page){
       axios.post('api/questions/getQsts', {page: page})
       .then( response=> {
-           this.questions= response.data;
-          this.count=30; //redefinition
-          if(!this.timeStop) { // if user dont have this bonus
-              //this.timer(); // appelle
+          if (this.page != 3){
+              this.questions = response.data;
+          this.qst = this.questions[0].contenuQst;
+          this.count = 30; //redefinition
+          if (!this.timeStop) { // if user dont have this bonus
+              this.timer(); // appelle
           }
           this.eliminer();
-          if(this.nbrCorect>=2){
+          if (this.nbrCorect >= 2) {
               this.streak(true);
           }
-          if(this.page==3){ // if we hit max of  questions
-              //this.expModal= true;
+      } else if(this.page==3){ // if we hit max of  questions
               this.expModal=true;
-
           }
         })
       .catch( error=> { console.log(error);
        })
     },
     postAns(dataAbv){
-         var rep = document.getElementById(dataAbv);
+        clearTimeout(this.time);
+        var rep = document.getElementById(dataAbv);
         axios.post('api/questions/postAns', {rep: dataAbv, page: this.page+1, double:this.exp} )
        .then(response => {
         if(response.data){
@@ -141,11 +141,8 @@ export default{
               rep.classList.remove('bg-success');
             }, 1000);
              // s'il a donné 2 ou plusieurs réponses correctes => il recevra un bonus (ability)
-
-             if(this.exp || this.eraser2 || this.eraser || this.timeStop){
-                 this.eraser2= false;
+             if(this.exp || this.timeStop){
                  this.timeStop= false;
-                 this.eraser= false;
                  this.exp= false;
              }
         }else{
@@ -158,7 +155,6 @@ export default{
         }
         this.getQsts(this.page+=1);
             if(this.page==3){
-                //this.expModal= true;
                 this.expModal=true;
                 //this.$router.push('/Missions');
             }
@@ -167,14 +163,16 @@ export default{
        })
     },
       timer(){
-          setTimeout(this.countDown,1000);
+          this.time= setInterval(this.countDown,1000);
       },
       countDown(){
           this.count=this.count-1;
           if(this.count==0 && this.page!=3){
+              clearTimeout(this.time);
               this.getQsts(this.page=this.page+1);
-          }else{
-              this.timer();
+           if( this.page==3){
+                  this.expModal=true;
+              }
           }
       },
       streak(bool){
@@ -191,28 +189,19 @@ export default{
                   }
               } else {
                   td1.classList.add('streak');
-                  //console.log(td1);
               }
               axios.get('api/questions/randomBonus')
                   .then( response=> {
                       this.bonus= response.data[0];
-                      console.log(this.bonus.name);
+                      //console.log(this.bonus.name);
                       this.showModal=true;
-
                       if(this.bonus.name=="ExpX2"){
                           this.exp=true
-
-                      }else if(this.bonus.name=="50/50"){
-                          // not sure yet
-                          this.exp=true
-
-                      }else if (this.bonus.name=="Time Freeze"){
-                          this.exp=true
-
+                      }
+                      /*else if(this.bonus.name=="50/50"){ // not sure yet   }*/
+                      else if (this.bonus.name=="Time Freeze"){
                           this.timeStop= true;
                       }else if (this.bonus.name=="Eraser"){
-                          this.exp=true
-
                           let x = Math.floor(Math.random() * 3);
                           let btn = document.getElementById(this.notCorrect[x]);
                           btn.classList.replace('btn-light','btn-danger');
@@ -233,10 +222,9 @@ export default{
               if (!element.isCorrect) {
                   this.notCorrect [i] = element.abv;
                   i++;
-
               }
           });
-          console.log(this.notCorrect);
+          //console.log(this.notCorrect);
       },
       returnMissions(){
           this.$router.push('/Missions');
@@ -244,7 +232,6 @@ export default{
   },
   created(){
      this.getQsts(0);
-   //  this.streak();
   }
 }
 </script>

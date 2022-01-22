@@ -4,8 +4,7 @@
     <div class="d-flex justify-content-center row">
       <div class="col-md-10 col-lg-10">
         <div class="container bg-white p-3">
-
-                   <div class="raw">
+                  <!-- <div class="raw">
                            <div class="d-flex">
                                <div class="col-5">
                                <div class="monkeySad" id="mkimg"> </div>
@@ -22,13 +21,13 @@
                                <div class=""  id="bn5"></div>
                                </div>
                            </div>
-                   </div>
+                   </div>-->
             <div class="raw">
                <div  class="col-sm">
                   <div class="border">
                     <div class="border mb-3">
                       <div class="ml-1 mt-2 mr-1 mb-2">
-                                   {{question[0].contenuQst}}
+                                   {{qst}}
                           <h4 style="float: right;"> <i class="bi bi-stopwatch"><sub> {{count}}</sub></i> </h4>
                       </div>
                     </div>
@@ -48,6 +47,26 @@
       </div>
         </div>
   </div>
+
+    <div v-if="expModal">
+        <div class="popup">
+            <div class="modal-wrapper col-sm-3">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" @click="returnMissions">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body mb-5 mt-2 align-self-center expBg ">
+                            <h5 style="text-align: center" class="mt-5"> <strong>+ {{expTotal}} EXP</strong></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 </template>
 
@@ -56,7 +75,12 @@ export default{
 data : function (){
      return {
        question: [],
-         count: 30
+         qst:'',
+         count: 30,
+         time:0,
+         expTotal: 1000,
+         expModal:false
+
      }
   },
   methods:{
@@ -64,6 +88,7 @@ data : function (){
       axios.get('api/questions/getQstNv2')
       .then( response=> {
            this.question= response.data;
+          this.qst = this.question[0].contenuQst;
           this.count=30; //redefinition
            this.timer(); // appelle
         /*  if(this.page==3){ // if we hit max of  questions
@@ -114,37 +139,43 @@ data : function (){
             s.add(tabTaches[i]);
           }
         }
-
         if (s.size == tabTaches.length) {
-          axios.post('api/questions/ans1Nv2', {rep: tabTaches})
+            clearTimeout(this.time);
+            axios.post('api/questions/ans1Nv2', {rep: tabTaches})
           .then( response=> {
                console.log(response.data);
-               if(response.data>=3){
-                   monkey.classList.replace('monkeySad','monkeyHappy');
-               }else{
+              this.expModal=true;
+              /*if(response.data>=3){
+                  monkey.classList.replace('monkeySad','monkeyHappy');
+              }else{
 
-               }
-              for (let i = 0; i < response.data; i++) {
-                  tabBn[i].classList.add('banana');
               }
-            })
+             for (let i = 0; i < response.data; i++) {
+                 tabBn[i].classList.add('banana');
+             }*/
+              //this.$router.push('/Missions');// redirection
+
+          })
           .catch( error=> { console.log("error");
            })
         }
     },
       timer(){
-          setTimeout(this.countDown,1000);
+          this.time= setInterval(this.countDown,1000);
       },
       countDown(){
           this.count=this.count-1;
           if(this.count==0){
-              //this.getQsts(this.page=this.page+1);
-              //console.log(this.page);
-              this.$router.push('/Missions');// redirection
-          }else{
-              this.timer();
+              clearTimeout(this.time);
+              this.expModal=true;
+
+              //this.$router.push('/Missions');// redirection
+                //  this.expModal=true;
           }
-      }
+      },
+    returnMissions(){
+        this.$router.push('/Missions');
+    }
   },
   created(){
      this.getNv2();
